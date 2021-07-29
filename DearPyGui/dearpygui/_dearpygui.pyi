@@ -730,6 +730,10 @@ def get_plot_query_area(plot : int) -> List[float]:
 	"""Returns the last/current query area of the plot. (Requires plot 'query' kwarg to be enabled)"""
 	...
 
+def get_raw_texture(item : int) -> int:
+	"""Undocumented function"""
+	...
+
 def get_selected_links(node_editor : int) -> List[List[str]]:
 	"""Undocumented"""
 	...

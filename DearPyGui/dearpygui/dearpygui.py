@@ -5869,6 +5869,17 @@ def get_plot_query_area(plot : int) -> List[float]:
 
 	return internal_dpg.get_plot_query_area(plot)
 
+def get_raw_texture(item : int) -> int:
+	"""
+	Undocumented function
+	Args:
+		item (int): 
+	Returns:
+		int
+	"""
+
+	return internal_dpg.get_raw_texture(item)
+
 def get_selected_links(node_editor : int) -> List[List[str]]:
 	"""
 	Undocumented
@@ -6770,6 +6781,7 @@ mvKey_F20=internal_dpg.mvKey_F20
 mvKey_F21=internal_dpg.mvKey_F21
 mvKey_F22=internal_dpg.mvKey_F22
 mvKey_F23=internal_dpg.mvKey_F23
+mvKey_F24=internal_dpg.mvKey_F24
 mvKey_F24=internal_dpg.mvKey_F24
 mvKey_NumLock=internal_dpg.mvKey_NumLock
 mvKey_ScrollLock=internal_dpg.mvKey_ScrollLock

@@ -24,6 +24,13 @@ namespace Marvel {
 		parser.finalize();
 
 		parsers->insert({ s_command, parser });
+
+		{
+			mvPythonParser parser(mvPyDataType::UUID);
+			parser.addArg<mvPyDataType::UUID>("item");
+			parser.finalize();
+			parsers->insert({ "get_raw_texture", parser });
+		}
 	}
 
 	mvRawTexture::mvRawTexture(mvUUID uuid)
