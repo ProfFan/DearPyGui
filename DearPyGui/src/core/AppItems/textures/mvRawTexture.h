@@ -23,7 +23,10 @@ namespace Marvel {
 			MV_CREATE_CONSTANT(mvFormat_Float_rgba, 0);
 			MV_CREATE_CONSTANT(mvFormat_Float_rgb, 1);
 
+		MV_CREATE_COMMAND(get_raw_texture);
+
 		MV_START_COMMANDS
+			MV_ADD_COMMAND(get_raw_texture);
 		MV_END_COMMANDS
 
 		MV_START_CONSTANTS

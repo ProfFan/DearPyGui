@@ -2,6 +2,7 @@
 #include "mvLog.h"
 #include "mvItemRegistry.h"
 #include "mvPythonExceptions.h"
+#include "mvPythonTranslator.h"
 #include "mvUtilities.h"
 #include "mvGlobalIntepreterLock.h"
 
@@ -168,4 +169,38 @@ namespace Marvel {
 			return;
 	}
 
+	PyObject* mvRawTexture::get_raw_texture(PyObject* self, PyObject* args, PyObject* kwargs)
+	{
+
+		mvUUID item;
+
+		if (!(mvApp::GetApp()->getParsers())["get_raw_texture"].parse(args, kwargs, __FUNCTION__,
+			&item))
+			return GetPyNone();
+
+		if (!mvApp::s_manualMutexControl) std::lock_guard<std::mutex> lk(mvApp::s_mutex);
+
+		auto raw_texture = mvApp::GetApp()->getItemRegistry().getItem(item);
+		if (raw_texture == nullptr)
+		{
+			mvThrowPythonError(mvErrorCode::mvItemNotFound, "get_raw_texture",
+				"Item not found: " + std::to_string(item), nullptr);
+			return GetPyNone();
+		}
+
+		if (raw_texture->getType() == mvAppItemType::mvRawTexture)
+		{
+
+			auto pRawTexture = static_cast<mvRawTexture*>(raw_texture);
+			auto texture_id = (unsigned int)(size_t)pRawTexture->_texture;
+			return Py_BuildValue("k", texture_id);
+		}
+		else
+		{
+			mvThrowPythonError(mvErrorCode::mvIncompatibleType, "get_raw_texture",
+				"Incompatible type. Expected types include: mvRawTexture", raw_texture);
+		}
+
+		return GetPyNone();
+	}
 }
