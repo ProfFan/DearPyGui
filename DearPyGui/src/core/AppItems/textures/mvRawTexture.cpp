@@ -33,7 +33,7 @@ namespace Marvel {
 		}
 
 		{
-			mvPythonParser parser(mvPyDataType::UUID);
+			mvPythonParser parser(mvPyDataType::None);
 			parser.addArg<mvPyDataType::UUID>("item");
 			parser.addArg<mvPyDataType::Bool>("value");
 			parser.finalize();
