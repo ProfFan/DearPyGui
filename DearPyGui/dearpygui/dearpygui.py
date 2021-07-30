@@ -6501,12 +6501,12 @@ def set_start_callback(callback : Callable) -> str:
 
 	return internal_dpg.set_start_callback(callback)
 
-def set_update_enable(item : int, value : bool) -> None:
+def set_update_enable(item : int, value : int) -> None:
 	"""
 	Undocumented function
 	Args:
 		item (int): 
-		value (bool): 
+		value (int): 
 	Returns:
 		None
 	"""

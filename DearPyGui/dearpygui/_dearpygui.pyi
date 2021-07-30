@@ -958,7 +958,7 @@ def set_start_callback(callback : Callable) -> str:
 	"""Undocumented function"""
 	...
 
-def set_update_enable(item : int, value : bool) -> None:
+def set_update_enable(item : int, value : int) -> None:
 	"""Undocumented function"""
 	...
 

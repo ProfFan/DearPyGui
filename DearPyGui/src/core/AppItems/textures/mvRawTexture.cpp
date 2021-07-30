@@ -36,7 +36,7 @@ namespace Marvel {
 		{
 			mvPythonParser parser(mvPyDataType::None);
 			parser.addArg<mvPyDataType::UUID>("item");
-			parser.addArg<mvPyDataType::Bool>("value");
+			parser.addArg<mvPyDataType::Integer>("value");
 			parser.finalize();
 			parsers->insert({ "set_update_enable", parser });
 		}
@@ -224,7 +224,7 @@ namespace Marvel {
 	{
 
 		mvUUID item;
-		bool value;
+		int value;
 
 		if (!mvApp::GetApp()->getParsers()["set_update_enable"].verifyRequiredArguments(args))
 			return GetPyNone();
@@ -248,7 +248,7 @@ namespace Marvel {
 
 			auto pTexture = static_cast<mvRawTexture*>(raw_texture);
 
-			pTexture->_update = value;
+			pTexture->_update = (bool)value;
 		}
 		else
 		{
