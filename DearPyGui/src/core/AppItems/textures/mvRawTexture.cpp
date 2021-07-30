@@ -122,7 +122,7 @@ namespace Marvel {
 			return;
 		}
 
-		if (_componentType == ComponentType::MV_FLOAT_COMPONENT)
+		if (_componentType == ComponentType::MV_FLOAT_COMPONENT && _update)
 			UpdateRawTexture(_texture, _width, _height, (float*)_value, _components);
 
 	}
