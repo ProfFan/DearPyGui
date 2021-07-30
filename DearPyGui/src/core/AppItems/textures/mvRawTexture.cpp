@@ -225,6 +225,9 @@ namespace Marvel {
 		mvUUID item;
 		bool value;
 
+		if (!mvApp::GetApp()->getParsers()["set_update_enable"].verifyRequiredArguments(args))
+			return GetPyNone();
+
 		if (!(mvApp::GetApp()->getParsers())["set_update_enable"].parse(args, kwargs, __FUNCTION__,
 			&item, &value))
 			return GetPyNone();
