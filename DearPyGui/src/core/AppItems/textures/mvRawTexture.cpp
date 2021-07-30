@@ -31,6 +31,14 @@ namespace Marvel {
 			parser.finalize();
 			parsers->insert({ "get_raw_texture", parser });
 		}
+
+		{
+			mvPythonParser parser(mvPyDataType::None);
+			parser.addArg<mvPyDataType::UUID>("item");
+			parser.addArg<mvPyDataType::Bool>("value");
+			parser.finalize();
+			parsers->insert({ "set_update_enable", parser });
+		}
 	}
 
 	mvRawTexture::mvRawTexture(mvUUID uuid)
@@ -103,7 +111,7 @@ namespace Marvel {
 			if (_value == nullptr)
 				return;
 
-			if(_componentType == ComponentType::MV_FLOAT_COMPONENT)
+			if(_componentType == ComponentType::MV_FLOAT_COMPONENT && _update)
 				_texture = LoadTextureFromArrayRaw(_width, _height, (float*)_value, _components);
 
 			if (_texture == nullptr)
@@ -208,6 +216,42 @@ namespace Marvel {
 				"Incompatible type. Expected types include: mvRawTexture", raw_texture);
 		}
 
+		return GetPyNone();
+	}
+
+	PyObject* mvRawTexture::set_update_enable(PyObject* self, PyObject* args, PyObject* kwargs)
+	{
+
+		mvUUID item;
+		bool value;
+
+		if (!(mvApp::GetApp()->getParsers())["set_update_enable"].parse(args, kwargs, __FUNCTION__,
+			&item, &value))
+			return GetPyNone();
+
+		if (!mvApp::s_manualMutexControl) std::lock_guard<std::mutex> lk(mvApp::s_mutex);
+
+		auto window = mvApp::GetApp()->getItemRegistry().getItem(item);
+		if (window == nullptr)
+		{
+			mvThrowPythonError(mvErrorCode::mvItemNotFound, "set_update_enable",
+				"Item not found: " + std::to_string(item), nullptr);
+			return GetPyNone();
+		}
+
+		if (window->getType() == mvAppItemType::mvRawTexture)
+		{
+
+			auto pWindow = static_cast<mvRawTexture*>(window);
+
+			pWindow->_update = value;
+		}
+		else
+		{
+			mvThrowPythonError(mvErrorCode::mvIncompatibleType, "set_update_enable",
+				"Incompatible type. Expected types include: mvRawTexture", window);
+		}
+		
 		return GetPyNone();
 	}
 }
