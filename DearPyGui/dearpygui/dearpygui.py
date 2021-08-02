@@ -4280,7 +4280,7 @@ def add_radio_button(items : List[str] =(), *, label: str =None, id: int =0, ind
 
 	return internal_dpg.add_radio_button(items, label=label, id=id, indent=indent, parent=parent, before=before, source=source, payload_type=payload_type, callback=callback, drag_callback=drag_callback, drop_callback=drop_callback, show=show, enabled=enabled, pos=pos, filter_key=filter_key, tracked=tracked, track_offset=track_offset, user_data=user_data, default_value=default_value, horizontal=horizontal)
 
-def add_raw_texture(width : int, height : int, default_value : List[float], *, label: str =None, id: int =0, user_data: Any =None, format: int =internal_dpg.mvFormat_Float_rgba, parent: int =internal_dpg.mvReservedUUID_2) -> int:
+def add_raw_texture(width : int, height : int, default_value : List[float], *, label: str =None, id: int =0, user_data: Any =None, textureid: int =0, format: int =internal_dpg.mvFormat_Float_rgba, parent: int =internal_dpg.mvReservedUUID_2) -> int:
 	"""
 	Undocumented function
 	Args:
@@ -4290,13 +4290,14 @@ def add_raw_texture(width : int, height : int, default_value : List[float], *, l
 		**label (str): Overrides 'name' as label.
 		**id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
 		**user_data (Any): User data for callbacks.
+		**textureid (int): Texture ID if the texture has been created externally.
 		**format (int): Data format.
 		**parent (int): Parent to add this item to. (runtime adding)
 	Returns:
 		int
 	"""
 
-	return internal_dpg.add_raw_texture(width, height, default_value, label=label, id=id, user_data=user_data, format=format, parent=parent)
+	return internal_dpg.add_raw_texture(width, height, default_value, label=label, id=id, user_data=user_data, textureid=textureid, format=format, parent=parent)
 
 def add_resize_handler(parent : int, *, label: str =None, id: int =0, callback: Callable =None, show: bool =True, user_data: Any =None) -> int:
 	"""

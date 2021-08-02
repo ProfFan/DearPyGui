@@ -386,7 +386,7 @@ def add_radio_button(items : List[str] =(), *, label: str =None, id: int =0, ind
 	"""Adds a set of radio buttons. If items keyword is empty, nothing will be shown."""
 	...
 
-def add_raw_texture(width : int, height : int, default_value : List[float], *, label: str =None, id: int =0, user_data: Any =None, format: int =internal_dpg.mvFormat_Float_rgba, parent: int =internal_dpg.mvReservedUUID_2) -> int:
+def add_raw_texture(width : int, height : int, default_value : List[float], *, label: str =None, id: int =0, user_data: Any =None, textureid: int =0, format: int =internal_dpg.mvFormat_Float_rgba, parent: int =internal_dpg.mvReservedUUID_2) -> int:
 	"""Undocumented function"""
 	...
 

@@ -1,4 +1,6 @@
 #include "mvRawTexture.h"
+#include "dictobject.h"
+#include "mvAppItemState.h"
 #include "mvLog.h"
 #include "mvItemRegistry.h"
 #include "mvPythonExceptions.h"
@@ -19,6 +21,8 @@ namespace Marvel {
 			parser.addArg<mvPyDataType::Integer>("width");
 			parser.addArg<mvPyDataType::Integer>("height");
 			parser.addArg<mvPyDataType::FloatList>("default_value");
+
+			parser.addArg<mvPyDataType::UUID>("textureid", mvArgType::KEYWORD_ARG, "0", "Texture ID if the texture has been created externally.");
 			parser.addArg<mvPyDataType::Integer>("format", mvArgType::KEYWORD_ARG, "internal_dpg.mvFormat_Float_rgba", "Data format.");
 			parser.addArg<mvPyDataType::UUID>("parent", mvArgType::KEYWORD_ARG, "internal_dpg.mvReservedUUID_2", "Parent to add this item to. (runtime adding)");
 			parser.finalize();
@@ -175,6 +179,15 @@ namespace Marvel {
 			{
 				_components = 3;
 				_componentType = mvRawTexture::ComponentType::MV_FLOAT_COMPONENT;
+			}
+		}
+
+		if (PyObject* item = PyDict_GetItemString(dict, "textureid")) {
+			void* texture_id = (void*)ToUUID(item);
+
+			if (texture_id != NULL) {
+				_texture = texture_id;
+				_update = false;
 			}
 		}
 	}
