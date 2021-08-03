@@ -1,4 +1,5 @@
 #include "mvRawCanvas.h"
+#include "mvAppItemState.h"
 #include "mvItemRegistry.h"
 #include "mvApp.h"
 #include "mvPythonExceptions.h"
@@ -55,8 +56,8 @@ namespace Marvel {
 		{
 			ImVec2 avail_size = ImGui::GetContentRegionAvail();
 
-			auto app_data = PyTuple_New(2);
-			auto size_tuple = PyTuple_New(2);
+			PyObject* app_data = PyTuple_New(2);
+			PyObject* size_tuple = PyTuple_New(2);
 
 			PyTuple_SetItem(size_tuple, 0, ToPyInt(avail_size.x));
 			PyTuple_SetItem(size_tuple, 1, ToPyInt(avail_size.y));
