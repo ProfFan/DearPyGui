@@ -1,4 +1,5 @@
 #include "mvRawCanvas.h"
+#include "imgui.h"
 #include "mvAppItemState.h"
 #include "mvItemRegistry.h"
 #include "mvApp.h"
@@ -69,9 +70,15 @@ namespace Marvel {
 
 			ScopedID id(_uuid);
 
-			ImGui::Image(_textureHandle, ImVec2(_width, _height), ImVec2(_uv_min.x, _uv_min.y), ImVec2(_uv_max.x, _uv_max.y),
-				ImVec4((float)_tintColor.r, (float)_tintColor.g, (float)_tintColor.b, (float)_tintColor.a),
-				ImVec4((float)_borderColor.r, (float)_borderColor.g, (float)_borderColor.b, (float)_borderColor.a));
+			ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+			auto pos = ImGui::GetCursorScreenPos();
+        	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+			
+			auto uv0 = ImVec2(_uv_min.x, _uv_min.y);
+			auto uv1 = ImVec2(_uv_max.x, _uv_max.y);
+			auto tint_col = ImVec4((float)_tintColor.r, (float)_tintColor.g, (float)_tintColor.b, (float)_tintColor.a);
+			auto border_col = ImVec4((float)_borderColor.r, (float)_borderColor.g, (float)_borderColor.b, (float)_borderColor.a);
 
 			ImGuiIO& io = ImGui::GetIO();
 
@@ -82,6 +89,23 @@ namespace Marvel {
 				value_changed = true;
 			}
 
+			ImRect bb(window->DC.CursorPos, window->DC.CursorPos + avail_size);
+			if (border_col.w > 0.0f)
+				bb.Max += ImVec2(2, 2);
+			ImGui::ItemSize(bb);
+			if (!ImGui::ItemAdd(bb, 0))
+				return;
+
+			if (border_col.w > 0.0f)
+			{
+				draw_list->AddRect(bb.Min, bb.Max, ImGui::GetColorU32(border_col), 0.0f);
+				draw_list->AddImage(_textureHandle, bb.Min + ImVec2(1, 1), bb.Max - ImVec2(1, 1), uv0, uv1, ImGui::GetColorU32(tint_col));
+			}
+			else
+			{
+				draw_list->AddImage(_textureHandle, bb.Min, bb.Max, uv0, uv1, ImGui::GetColorU32(tint_col));
+			}
+			
 			if (value_changed) {
 				mvApp::GetApp()->getCallbackRegistry().submitCallback([=]() {
 					PyObject* app_data = PyTuple_New(2);
