@@ -62,14 +62,37 @@ namespace Marvel {
 
 				PyTuple_SetItem(size_tuple, 0, ToPyInt(avail_size.x));
 				PyTuple_SetItem(size_tuple, 1, ToPyInt(avail_size.y));
-				PyTuple_SetItem(app_data, 0, ToPyUUID((mvUUID)_textureHandle));
+				PyTuple_SetItem(app_data, 0, ToPyUUID(0));
 				PyTuple_SetItem(app_data, 1, size_tuple);
 				mvApp::GetApp()->getCallbackRegistry().addCallback(getCallback(false), _uuid, app_data, _user_data);
 			});
 
+			ScopedID id(_uuid);
+
 			ImGui::Image(_textureHandle, ImVec2(_width, _height), ImVec2(_uv_min.x, _uv_min.y), ImVec2(_uv_max.x, _uv_max.y),
 				ImVec4((float)_tintColor.r, (float)_tintColor.g, (float)_tintColor.b, (float)_tintColor.a),
 				ImVec4((float)_borderColor.r, (float)_borderColor.g, (float)_borderColor.b, (float)_borderColor.a));
+
+			ImGuiIO& io = ImGui::GetIO();
+
+			bool value_changed = false;
+			bool is_active = ImGui::IsItemActive();
+			if (is_active && (io.MouseDelta.x != 0.0f || io.MouseDelta.y != 0.0f)) {
+				value_changed = true;
+			}
+
+			if (value_changed) {
+				mvApp::GetApp()->getCallbackRegistry().submitCallback([=]() {
+					PyObject* app_data = PyTuple_New(2);
+					PyObject* delta_tuple = PyTuple_New(2);
+
+					PyTuple_SetItem(delta_tuple, 0, ToPyInt(io.MouseDelta.x));
+					PyTuple_SetItem(delta_tuple, 1, ToPyInt(io.MouseDelta.y));
+					PyTuple_SetItem(app_data, 0, ToPyUUID(1));
+					PyTuple_SetItem(app_data, 1, delta_tuple);
+					mvApp::GetApp()->getCallbackRegistry().addCallback(getCallback(false), _uuid, app_data, _user_data);
+				});
+			}
 		}
 
 	}
