@@ -89,7 +89,7 @@ namespace Marvel {
 				value_changed = true;
 			}
 
-			ImRect bb(window->DC.CursorPos, window->DC.CursorPos + avail_size);
+			ImRect bb(pos, pos + avail_size);
 			if (border_col.w > 0.0f)
 				bb.Max += ImVec2(2, 2);
 			ImGui::ItemSize(bb);
@@ -105,7 +105,7 @@ namespace Marvel {
 			{
 				draw_list->AddImage(_textureHandle, bb.Min, bb.Max, uv0, uv1, ImGui::GetColorU32(tint_col));
 			}
-			
+
 			if (value_changed) {
 				mvApp::GetApp()->getCallbackRegistry().submitCallback([=]() {
 					PyObject* app_data = PyTuple_New(2);
