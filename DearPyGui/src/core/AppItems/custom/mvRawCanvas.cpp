@@ -56,15 +56,14 @@ namespace Marvel {
 		{
 			ImVec2 avail_size = ImGui::GetContentRegionAvail();
 
-			PyObject* app_data = PyTuple_New(2);
-			PyObject* size_tuple = PyTuple_New(2);
-
-			PyTuple_SetItem(size_tuple, 0, ToPyInt(avail_size.x));
-			PyTuple_SetItem(size_tuple, 1, ToPyInt(avail_size.y));
-			PyTuple_SetItem(app_data, 0, ToPyUUID((mvUUID)_textureHandle));
-			PyTuple_SetItem(app_data, 1, size_tuple);
-
 			mvApp::GetApp()->getCallbackRegistry().submitCallback([=]() {
+				PyObject* app_data = PyTuple_New(2);
+				PyObject* size_tuple = PyTuple_New(2);
+
+				PyTuple_SetItem(size_tuple, 0, ToPyInt(avail_size.x));
+				PyTuple_SetItem(size_tuple, 1, ToPyInt(avail_size.y));
+				PyTuple_SetItem(app_data, 0, ToPyUUID((mvUUID)_textureHandle));
+				PyTuple_SetItem(app_data, 1, size_tuple);
 				mvApp::GetApp()->getCallbackRegistry().addCallback(getCallback(false), _uuid, app_data, _user_data);
 			});
 
