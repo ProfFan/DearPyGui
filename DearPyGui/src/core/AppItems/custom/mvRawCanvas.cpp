@@ -76,7 +76,8 @@ namespace Marvel {
 			ImGuiIO& io = ImGui::GetIO();
 
 			bool value_changed = false;
-			bool is_active = ImGui::IsItemActive();
+			ImGui::InvisibleButton(_specificedlabel.c_str(), avail_size);
+    		bool is_active = ImGui::IsItemActive();
 			if (is_active && (io.MouseDelta.x != 0.0f || io.MouseDelta.y != 0.0f)) {
 				value_changed = true;
 			}
