@@ -4280,6 +4280,39 @@ def add_radio_button(items : List[str] =(), *, label: str =None, id: int =0, ind
 
 	return internal_dpg.add_radio_button(items, label=label, id=id, indent=indent, parent=parent, before=before, source=source, payload_type=payload_type, callback=callback, drag_callback=drag_callback, drop_callback=drop_callback, show=show, enabled=enabled, pos=pos, filter_key=filter_key, tracked=tracked, track_offset=track_offset, user_data=user_data, default_value=default_value, horizontal=horizontal)
 
+def add_raw_canvas(texture_handle : int, *, label: str =None, id: int =0, width: int =0, height: int =0, indent: int =-1, parent: int =0, before: int =0, source: int =0, payload_type: str ='$$DPG_PAYLOAD', callback: Callable =None, drag_callback: Callable =None, drop_callback: Callable =None, show: bool =True, pos: List[int] =[], filter_key: str ='', tracked: bool =False, track_offset: float =0.5, user_data: Any =None, tint_color: List[float] =(255, 255, 255, 255), border_color: List[float] =(0, 0, 0, 0), uv_min: List[float] =(0.0, 0.0), uv_max: List[float] =(1.0, 1.0)) -> int:
+	"""
+	Adds an image from a specified texture. uv_min and uv_max represent the normalized texture coordinates of the original image that will be shown. Using range (0.0,0.0)->(1.0,1.0) for texture coordinates will generally display the entire texture.
+	Args:
+		texture_handle (int): 
+		**label (str): Overrides 'name' as label.
+		**id (int): Unique id used to programmatically refer to the item.If label is unused this will be the label.
+		**width (int): Width of the item.
+		**height (int): Height of the item.
+		**indent (int): Offsets the widget to the right the specified number multiplied by the indent style.
+		**parent (int): Parent to add this item to. (runtime adding)
+		**before (int): This item will be displayed before the specified item in the parent.
+		**source (int): Overrides 'id' as value storage key.
+		**payload_type (str): Sender string type must be the same as the target for the target to run the payload_callback.
+		**callback (Callable): Registers a callback.
+		**drag_callback (Callable): Registers a drag callback for drag and drop.
+		**drop_callback (Callable): Registers a drop callback for drag and drop.
+		**show (bool): Attempt to render widget.
+		**pos (List[int]): Places the item relative to window coordinates, [0,0] is top left.
+		**filter_key (str): Used by filter widget.
+		**tracked (bool): Scroll tracking
+		**track_offset (float): 0.0f:top, 0.5f:center, 1.0f:bottom
+		**user_data (Any): User data for callbacks.
+		**tint_color (List[float]): Applies a color tint to the entire texture.
+		**border_color (List[float]): Displays a border of the specified color around the texture.
+		**uv_min (List[float]): Normalized texture coordinates min point.
+		**uv_max (List[float]): Normalized texture coordinates max point.
+	Returns:
+		int
+	"""
+
+	return internal_dpg.add_raw_canvas(texture_handle, label=label, id=id, width=width, height=height, indent=indent, parent=parent, before=before, source=source, payload_type=payload_type, callback=callback, drag_callback=drag_callback, drop_callback=drop_callback, show=show, pos=pos, filter_key=filter_key, tracked=tracked, track_offset=track_offset, user_data=user_data, tint_color=tint_color, border_color=border_color, uv_min=uv_min, uv_max=uv_max)
+
 def add_raw_texture(width : int, height : int, default_value : List[float], *, label: str =None, id: int =0, user_data: Any =None, textureid: int =0, format: int =internal_dpg.mvFormat_Float_rgba, parent: int =internal_dpg.mvReservedUUID_2) -> int:
 	"""
 	Undocumented function
@@ -7005,6 +7038,7 @@ mvColorMapScale=internal_dpg.mvColorMapScale
 mvSlider3D=internal_dpg.mvSlider3D
 mvKnobFloat=internal_dpg.mvKnobFloat
 mvLoadingIndicator=internal_dpg.mvLoadingIndicator
+mvRawCanvas=internal_dpg.mvRawCanvas
 mvNodeLink=internal_dpg.mvNodeLink
 mvTextureRegistry=internal_dpg.mvTextureRegistry
 mvStaticTexture=internal_dpg.mvStaticTexture

@@ -53,7 +53,7 @@ namespace Marvel {
         mvImageSeries, mvPieSeries, mvShadeSeries, mvLabelSeries,
         mvHistogramSeries, mv2dHistogramSeries,
         mvCandleSeries, mvAreaSeries, mvColorMapScale, mvSlider3D,
-        mvKnobFloat, mvLoadingIndicator, mvNodeLink, 
+        mvKnobFloat, mvLoadingIndicator, mvRawCanvas, mvNodeLink, 
         mvTextureRegistry, mvStaticTexture, mvDynamicTexture,
         mvStagingContainer, mvDrawLayer, mvViewportDrawlist,
         mvFileExtension, mvPlotLegend, mvPlotAxis,

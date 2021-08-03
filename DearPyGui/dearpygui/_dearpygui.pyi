@@ -386,6 +386,10 @@ def add_radio_button(items : List[str] =(), *, label: str =None, id: int =0, ind
 	"""Adds a set of radio buttons. If items keyword is empty, nothing will be shown."""
 	...
 
+def add_raw_canvas(texture_handle : int, *, label: str =None, id: int =0, width: int =0, height: int =0, indent: int =-1, parent: int =0, before: int =0, source: int =0, payload_type: str ='$$DPG_PAYLOAD', callback: Callable =None, drag_callback: Callable =None, drop_callback: Callable =None, show: bool =True, pos: List[int] =[], filter_key: str ='', tracked: bool =False, track_offset: float =0.5, user_data: Any =None, tint_color: List[float] =(255, 255, 255, 255), border_color: List[float] =(0, 0, 0, 0), uv_min: List[float] =(0.0, 0.0), uv_max: List[float] =(1.0, 1.0)) -> int:
+	"""Adds an image from a specified texture. uv_min and uv_max represent the normalized texture coordinates of the original image that will be shown. Using range (0.0,0.0)->(1.0,1.0) for texture coordinates will generally display the entire texture."""
+	...
+
 def add_raw_texture(width : int, height : int, default_value : List[float], *, label: str =None, id: int =0, user_data: Any =None, textureid: int =0, format: int =internal_dpg.mvFormat_Float_rgba, parent: int =internal_dpg.mvReservedUUID_2) -> int:
 	"""Undocumented function"""
 	...
