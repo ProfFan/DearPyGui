@@ -132,6 +132,8 @@ namespace Marvel {
 
         // Setup style
         ImGui::StyleColorsDark();
+        auto& style = ImGui::GetStyle();
+        style.ScaleAllSizes(2.0);
         mvApp::SetDefaultTheme();
 
         // Setup Platform/Renderer bindings

@@ -114,6 +114,7 @@ set(MARVEL_SOURCES
 	"src/core/AppItems/custom/mvSlider3D.cpp"
 	"src/core/AppItems/custom/mvKnob.cpp"
 	"src/core/AppItems/custom/mvLoadingIndicator.cpp"
+	"src/core/AppItems/custom/mvRawCanvas.cpp"
 
 	"src/core/AppItems/drawing/mvDrawlist.cpp"
 	"src/core/AppItems/drawing/mvDrawLine.cpp"

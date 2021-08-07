@@ -1,7 +1,10 @@
 #include "mvRawTexture.h"
+#include "dictobject.h"
+#include "mvAppItemState.h"
 #include "mvLog.h"
 #include "mvItemRegistry.h"
 #include "mvPythonExceptions.h"
+#include "mvPythonTranslator.h"
 #include "mvUtilities.h"
 #include "mvGlobalIntepreterLock.h"
 
@@ -9,20 +12,38 @@ namespace Marvel {
 
 	void mvRawTexture::InsertParser(std::map<std::string, mvPythonParser>* parsers)
 	{
+		{
+			mvPythonParser parser(mvPyDataType::UUID, "Undocumented function", { "Textures", "Widgets" });
+			mvAppItem::AddCommonArgs(parser, (CommonParserArgs)(
+				MV_PARSER_ARG_ID)
+			);
 
-		mvPythonParser parser(mvPyDataType::UUID, "Undocumented function", { "Textures", "Widgets" });
-		mvAppItem::AddCommonArgs(parser, (CommonParserArgs)(
-			MV_PARSER_ARG_ID)
-		);
+			parser.addArg<mvPyDataType::Integer>("width");
+			parser.addArg<mvPyDataType::Integer>("height");
+			parser.addArg<mvPyDataType::FloatList>("default_value");
 
-		parser.addArg<mvPyDataType::Integer>("width");
-		parser.addArg<mvPyDataType::Integer>("height");
-		parser.addArg<mvPyDataType::FloatList>("default_value");
-		parser.addArg<mvPyDataType::Integer>("format", mvArgType::KEYWORD_ARG, "internal_dpg.mvFormat_Float_rgba", "Data format.");
-		parser.addArg<mvPyDataType::UUID>("parent", mvArgType::KEYWORD_ARG, "internal_dpg.mvReservedUUID_2", "Parent to add this item to. (runtime adding)");
-		parser.finalize();
+			parser.addArg<mvPyDataType::UUID>("textureid", mvArgType::KEYWORD_ARG, "0", "Texture ID if the texture has been created externally.");
+			parser.addArg<mvPyDataType::Integer>("format", mvArgType::KEYWORD_ARG, "internal_dpg.mvFormat_Float_rgba", "Data format.");
+			parser.addArg<mvPyDataType::UUID>("parent", mvArgType::KEYWORD_ARG, "internal_dpg.mvReservedUUID_2", "Parent to add this item to. (runtime adding)");
+			parser.finalize();
 
-		parsers->insert({ s_command, parser });
+			parsers->insert({ s_command, parser });
+		}
+		
+		{
+			mvPythonParser parser(mvPyDataType::UUID);
+			parser.addArg<mvPyDataType::UUID>("item");
+			parser.finalize();
+			parsers->insert({ "get_raw_texture", parser });
+		}
+
+		{
+			mvPythonParser parser(mvPyDataType::None);
+			parser.addArg<mvPyDataType::UUID>("item");
+			parser.addArg<mvPyDataType::Integer>("value");
+			parser.finalize();
+			parsers->insert({ "set_update_enable", parser });
+		}
 	}
 
 	mvRawTexture::mvRawTexture(mvUUID uuid)
@@ -95,7 +116,7 @@ namespace Marvel {
 			if (_value == nullptr)
 				return;
 
-			if(_componentType == ComponentType::MV_FLOAT_COMPONENT)
+			if(_componentType == ComponentType::MV_FLOAT_COMPONENT && _update)
 				_texture = LoadTextureFromArrayRaw(_width, _height, (float*)_value, _components);
 
 			if (_texture == nullptr)
@@ -105,7 +126,7 @@ namespace Marvel {
 			return;
 		}
 
-		if (_componentType == ComponentType::MV_FLOAT_COMPONENT)
+		if (_componentType == ComponentType::MV_FLOAT_COMPONENT && _update)
 			UpdateRawTexture(_texture, _width, _height, (float*)_value, _components);
 
 	}
@@ -160,6 +181,15 @@ namespace Marvel {
 				_componentType = mvRawTexture::ComponentType::MV_FLOAT_COMPONENT;
 			}
 		}
+
+		if (PyObject* item = PyDict_GetItemString(dict, "textureid")) {
+			void* texture_id = (void*)ToUUID(item);
+
+			if (texture_id != NULL) {
+				_texture = texture_id;
+				_update = false;
+			}
+		}
 	}
 
 	void mvRawTexture::getSpecificConfiguration(PyObject* dict)
@@ -168,4 +198,77 @@ namespace Marvel {
 			return;
 	}
 
+	PyObject* mvRawTexture::get_raw_texture(PyObject* self, PyObject* args, PyObject* kwargs)
+	{
+
+		mvUUID item;
+
+		if (!(mvApp::GetApp()->getParsers())["get_raw_texture"].parse(args, kwargs, __FUNCTION__,
+			&item))
+			return GetPyNone();
+
+		if (!mvApp::s_manualMutexControl) std::lock_guard<std::mutex> lk(mvApp::s_mutex);
+
+		auto raw_texture = mvApp::GetApp()->getItemRegistry().getItem(item);
+		if (raw_texture == nullptr)
+		{
+			mvThrowPythonError(mvErrorCode::mvItemNotFound, "get_raw_texture",
+				"Item not found: " + std::to_string(item), nullptr);
+			return GetPyNone();
+		}
+
+		if (raw_texture->getType() == mvAppItemType::mvRawTexture)
+		{
+
+			auto pRawTexture = static_cast<mvRawTexture*>(raw_texture);
+			auto texture_id = (unsigned int)(size_t)pRawTexture->_texture;
+			return Py_BuildValue("k", texture_id);
+		}
+		else
+		{
+			mvThrowPythonError(mvErrorCode::mvIncompatibleType, "get_raw_texture",
+				"Incompatible type. Expected types include: mvRawTexture", raw_texture);
+		}
+
+		return GetPyNone();
+	}
+
+	PyObject* mvRawTexture::set_update_enable(PyObject* self, PyObject* args, PyObject* kwargs)
+	{
+
+		mvUUID item;
+		int value;
+
+		if (!mvApp::GetApp()->getParsers()["set_update_enable"].verifyRequiredArguments(args))
+			return GetPyNone();
+
+		if (!(mvApp::GetApp()->getParsers())["set_update_enable"].parse(args, kwargs, __FUNCTION__,
+			&item, &value))
+			return GetPyNone();
+
+		if (!mvApp::s_manualMutexControl) std::lock_guard<std::mutex> lk(mvApp::s_mutex);
+
+		auto raw_texture = mvApp::GetApp()->getItemRegistry().getItem(item);
+		if (raw_texture == nullptr)
+		{
+			mvThrowPythonError(mvErrorCode::mvItemNotFound, "set_update_enable",
+				"Item not found: " + std::to_string(item), nullptr);
+			return GetPyNone();
+		}
+
+		if (raw_texture->getType() == mvAppItemType::mvRawTexture)
+		{
+
+			auto pTexture = static_cast<mvRawTexture*>(raw_texture);
+
+			pTexture->_update = (bool)value;
+		}
+		else
+		{
+			mvThrowPythonError(mvErrorCode::mvIncompatibleType, "set_update_enable",
+				"Incompatible type. Expected types include: mvRawTexture", raw_texture);
+		}
+		
+		return GetPyNone();
+	}
 }
